@@ -6,6 +6,7 @@ const date = require(__dirname + "/date.js");
 const mongoose = require("mongoose");
 const {redirect} = require("express/lib/response");
 const e = require("express");
+const config = require("./config.json");
 
 var _ = require('lodash');
 
@@ -17,7 +18,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 
-mongoose.connect('mongodb://localhost:27017/todolistDB');
+mongoose.connect(`mongodb+srv://${config.username}:${config.password}@cluster0.elmz8.mongodb.net/todolistDB`);
 
 const itemSchema = mongoose.Schema({name: String});
 
@@ -25,13 +26,13 @@ const Item = mongoose.model("item", itemSchema);
 
 const defaultItems = [
     new Item(
-        {name: "Study"}
+        {name: "Crea tareas"}
     ),
     new Item(
-        {name: "Work out"}
+        {name: "<- Elimina tareas al usar este boton"}
     ),
     new Item(
-        {name: "Sleep"}
+        {name: "Crea nuevas listas al nombrarlas despues del slash en la direccion"}
     )
 ];
 
@@ -59,8 +60,6 @@ app.get("/", function (req, res) {
 
                 Item.insertMany(defaultItems, (err) => {
                     err ? console.log(err) : console.log("Standard items added");
-
-                }).then(() => {
                     res.redirect("/");
                 });
             }
